@@ -17,7 +17,7 @@ from app.reschedule_engine import (
     is_iso_date,
     normalize_weather_df,
 )
-from app.weather_service import fetch_weather_data
+from app.weather_api import get_weather_data
 from app.schemas.schedule import GenerateScheduleRequest, EvaluateThresholdStatusRequest
 from app.services.task_eval_threshold_service import TASK_EVAL_DEFAULTS, get_task_eval_thresholds_payload
 from app.services.task_conflict_service import (
@@ -672,7 +672,7 @@ def evaluate_status_threshold_core(
 
     weather_forecast = []
     try:
-        weather_forecast = fetch_weather_data(past_days=0, forecast_days=4)
+        weather_forecast = get_weather_data(past_days=0, forecast_days=4)
     except Exception:
         logger.exception("Weather fetch failed for AI status gating")
         weather_forecast = []
@@ -878,7 +878,7 @@ def evaluate_status_threshold(payload: EvaluateThresholdStatusRequest, user=Depe
 
 
 # Usage: frontend posts /api/schedule/insights with plot_id/date to populate Insight Recommendation card.
-# suggestions.py remains unchanged; reschedule_engine adds AI delay + weather-validated dates.
+# recommendations.py remains unchanged; reschedule_engine adds AI delay + weather-validated dates.
 @router.post("/insights")
 def get_insights(payload: InsightsRequest, user=Depends(get_current_user)):
     plot_id = payload.plot_id
@@ -902,7 +902,7 @@ def get_insights(payload: InsightsRequest, user=Depends(get_current_user)):
     weather_forecast = payload.weather_forecast
     if weather_forecast is None:
         try:
-            weather_forecast = fetch_weather_data(past_days=0, forecast_days=14)
+            weather_forecast = get_weather_data(past_days=0, forecast_days=14)
         except Exception:
             logger.exception("Weather fetch failed for insights")
             weather_forecast = []

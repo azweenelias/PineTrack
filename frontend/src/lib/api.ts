@@ -1,10 +1,10 @@
-// ---------- Suggestions ----------
+// ---------- Recommendations ----------
 export async function getWeatherRescheduleSuggestions(
   tasks: Task[], 
   weatherForecast: Record<string, unknown>[], 
   sensorSummary?: { avg_moisture: number; avg_temp: number }
 ) {
-  const res = await fetch(`${API_BASE}/suggestions/weather-reschedule`, {
+  const res = await fetch(`${API_BASE}/recommendations/weather-reschedule`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 

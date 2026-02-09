@@ -6,9 +6,16 @@ from datetime import datetime, timedelta
 LAT = 2.8149
 LON = 102.2854
 
-def fetch_weather_data(past_days=20, forecast_days=7):
+def get_weather_data(past_days=20, forecast_days=7):
     """
-    Fetches historical and forecast weather data from Open-Meteo.
+    Retrieves both historical and forecast weather data from Open-Meteo API.
+    
+    Args:
+        past_days (int): Number of historical days to fetch (default: 20)
+        forecast_days (int): Number of forecast days to fetch (default: 7)
+    
+    Returns:
+        list: Weather data with 'type' field ("Historical" or "Forecast")
     """
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
