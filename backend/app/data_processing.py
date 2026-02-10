@@ -25,19 +25,6 @@ def get_thresholds():
 # GET RAW DATA
 # ============================================================================
 def get_raw_data(plot_id=None):
-    """
-    Retrieve raw sensor data from Supabase with pagination support.
-    
-    Args:
-        plot_id (str, optional): Filter data by specific plot (e.g., 'A1', 'A2'). 
-                                 If None, fetches all plots.
-    
-    Returns:
-        pd.DataFrame: Raw sensor data with columns including:
-                      - data_added (timestamp)
-                      - temperature, soil_moisture
-                      - plot_id, device_id
-    """
     if plot_id:
         print(f"Fetching raw data for plot: {plot_id}")
     else:

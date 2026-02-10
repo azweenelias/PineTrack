@@ -45,19 +45,7 @@ def get_historical_data(plot_id=None, limit=1000):
 # TRAIN AND PREDICT
 # ============================================================================
 def train_and_predict(df, sensor, days, plot_id):
-    """
-    Complete training and prediction pipeline for a single sensor.
-    Combines feature preparation, model training, prediction, and formatting.
-    
-    Args:
-        df: Historical DataFrame
-        sensor: Sensor name ('temperature' or 'soil_moisture')
-        days: Number of days to forecast
-        plot_id: Plot identifier
-    
-    Returns:
-        tuple: (future_timestamps, predictions) or (None, None) if failed
-    """
+
     # Step 1: Prepare features
     target_col = f'cleaned_{sensor}'
     if target_col not in df.columns:
