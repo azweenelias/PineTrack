@@ -573,6 +573,7 @@ export type EvaluateStatusThresholdPayload = {
   plot_id: string;
   date: string;
   device_id?: number;
+  sensor_plot_id?: number;
   reschedule_days?: number;
   thresholds?: Record<string, number>;
   readings?: Record<string, number>;

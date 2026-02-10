@@ -28,7 +28,7 @@ uvicorn app.main:app --reload
 ### 3️⃣ **Test the API Endpoints**
 
 Open browser and test:
-- GET thresholds: `http://127.0.0.1:8000/config/thresholds`
+- GET thresholds: `http://127.0.0.1:5001/config/thresholds`
 - Should return JSON with default values
 
 ### 4️⃣ **Use Configuration Page**
@@ -87,13 +87,13 @@ thresholds (
 ### Test 1: Default Values
 ```powershell
 # Check if defaults are created
-curl http://127.0.0.1:8000/config/thresholds
+curl http://127.0.0.1:5001/config/thresholds
 ```
 
 ### Test 2: Update Thresholds
 ```powershell
 # Update via API
-curl -X PUT http://127.0.0.1:8000/config/thresholds \
+curl -X PUT http://127.0.0.1:5001/config/thresholds \
   -H "Content-Type: application/json" \
   -d '{"temperature_min": 10, "temperature_max": 50}'
 ```
@@ -101,7 +101,7 @@ curl -X PUT http://127.0.0.1:8000/config/thresholds \
 ### Test 3: Reset to Defaults
 ```powershell
 # Reset
-curl -X POST http://127.0.0.1:8000/config/thresholds/reset
+curl -X POST http://127.0.0.1:5001/config/thresholds/reset
 ```
 
 ---
