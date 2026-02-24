@@ -296,6 +296,11 @@ export function SchedulePage() {
     return getTasksForDate(selectedDate);
   }, [selectedDate, getTasksForDate]);
 
+  const selectedDateTasks = useMemo(() => {
+    if (!selectedDate) return [];
+    return getTasksForDate(selectedDate);
+  }, [selectedDate, tasks, filterPlot, filterStatus]);
+
   const getTasksForDay = (d: number) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     return getTasksForDate(dateStr);

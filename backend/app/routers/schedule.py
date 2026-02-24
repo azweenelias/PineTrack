@@ -656,6 +656,69 @@ def evaluate_status_threshold_core(
         temperature_val,
     )
 
+    reading_meta = None
+
+    # Fetch latest cleaned_data for device_id (prefer data_added desc, fallback to processed_at desc)
+    cleaned_res = (
+        supabase.table("cleaned_data")
+        .select(
+            "device_id, data_added, processed_at, temperature, soil_moisture, nitrogen, "
+            "cleaned_temperature, cleaned_soil_moisture, cleaned_nitrogen"
+        )
+        .eq("device_id", device_id)
+        .order("data_added", desc=True)
+        .limit(1)
+        .execute()
+    )
+    cleaned_row = (cleaned_res.data or [None])[0]
+
+    if cleaned_row and cleaned_row.get("data_added") is None:
+        fallback_res = (
+            supabase.table("cleaned_data")
+            .select(
+                "device_id, data_added, processed_at, temperature, soil_moisture, nitrogen, "
+                "cleaned_temperature, cleaned_soil_moisture, cleaned_nitrogen"
+            )
+            .eq("device_id", device_id)
+            .order("processed_at", desc=True)
+            .limit(1)
+            .execute()
+        )
+        cleaned_row = (fallback_res.data or [None])[0] or cleaned_row
+
+    if cleaned_row:
+        logger.info("DEBUG: cleaned_data query device_id=%s", device_id)
+        logger.info("SUCCESS: Sensor data fetched: %s", cleaned_row)
+        readings = {
+            "temperature": cleaned_row.get("cleaned_temperature")
+            if cleaned_row.get("cleaned_temperature") is not None
+            else cleaned_row.get("temperature"),
+            "soil_moisture": cleaned_row.get("cleaned_soil_moisture")
+            if cleaned_row.get("cleaned_soil_moisture") is not None
+            else cleaned_row.get("soil_moisture"),
+            "nitrogen": cleaned_row.get("cleaned_nitrogen")
+            if cleaned_row.get("cleaned_nitrogen") is not None
+            else cleaned_row.get("nitrogen"),
+        }
+        reading_meta = {
+            "device_id": cleaned_row.get("device_id", device_id),
+            "timestamp": cleaned_row.get("data_added") or cleaned_row.get("processed_at"),
+        }
+    else:
+        logger.warning("WARNING: No sensor data found for device_id = %s", device_id)
+        logger.info("DEBUG: cleaned_data query device_id=%s", device_id)
+        logger.info("DEBUG: cleaned_data row fetched: %s", cleaned_row)
+        if payload.readings:
+            reading_meta = {
+                "device_id": device_id,
+                "timestamp": None,
+            }
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail=f"No cleaned_data found for device_id={device_id} and no readings provided",
+            )
+
     # 1) Load tasks for that plot + date
     tasks_res = (
         supabase.table("tasks")
